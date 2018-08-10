@@ -25,9 +25,9 @@ resource "aws_ecs_task_definition" "fastweather" {
 resource "aws_ecs_service" "fastweather" {
   name            = "fastweather"
   cluster         = "${aws_ecs_cluster.fastweather.id}"
-  task_definition = "${aws_ecs_task_definition.mongo.arn}"
+  task_definition = "${aws_ecs_task_definition.fastweather.arn}" //To-Define
   desired_count   = 3
-  iam_role        = "${aws_iam_role.foo.arn}"
+  iam_role        = "${aws_iam_role.fastweather.arn}" //To-Define
   depends_on      = ["aws_iam_role_policy.foo"]
 
   ordered_placement_strategy {
