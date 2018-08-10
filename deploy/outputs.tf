@@ -1,5 +1,5 @@
 
-output "security_group_id" {
+output "fastweather_security_group_id" {
     value = "${module.fastweather_service_sg.id}"
 }
  

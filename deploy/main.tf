@@ -2,7 +2,7 @@ module "fastweather_service_sg" {
   source = "terraform-aws-modules/security-group/aws"
 
   name        = "fastweather"
-  description = "Security group for user-service with custom ports open within VPC, and PostgreSQL publicly open"
+  description = "Fastweather security group. Port 80 open publicly, 5000 internally"
   vpc_id      = "${aws_vpc.fastweather.id}"
 
   ingress_cidr_blocks      = ["10.10.0.0/16"]
@@ -12,16 +12,18 @@ module "fastweather_service_sg" {
       from_port   = 5000
       to_port     = 5000
       protocol    = "tcp"
-      description = ""
+      description = "Internal port to container"
       cidr_blocks = "10.10.0.0/16"
     },
     {
-      rule        = ""
+      from_port   = 80
+      to_port     = 80
+      protocol    = "tcp"
+      description = "Open to public"
       cidr_blocks = "0.0.0.0/0"
     },
   ]
 }
-
 resource "aws_lb_target_group" "fastweather_elb_target_group" {
   name     = "fastweather-tg"
   port     = 80
@@ -62,13 +64,9 @@ module "fastweather_elb" {
 
   access_logs = [
     {
-      bucket = "my-access-logs-bucket"
+      bucket = "fastweather-access-logs"
     },
   ]
-
-  // ELB attachments
-  number_of_instances = 2
-  instances           = ["i-06ff41a77dfb5349d", "i-4906ff41a77dfb53d"]
 
   tags = {
     Owner       = "user"
